@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mint Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./icons8-chat-bot-96.png" type=" image/x-icon ">
+
+</head>
+
+<body data-page="chat">
+    <div id="configBanner" class="banner" hidden>Firebase is not configured. Fill in <code>firebaseConfig</code> and <code>CLOUDINARY</code> at the top of script.js.</div>
+
+    <div id="appView" class="app" hidden>
+        <aside class="sidebar">
+            <header class="sbar">
+                <button id="meBtn" class="avatar" aria-label="My profile"></button>
+                <strong>Mint Chat</strong>
+                <button id="menuBtn" class="icon" data-i="more" aria-label="Menu"></button>
+            </header>
+            <nav class="tabs2">
+                <button id="tabChats" aria-selected="true">Chats</button>
+                <button id="tabStatus" aria-selected="false">Status</button>
+            </nav>
+
+            <div id="paneChats" style="display:flex;flex-direction:column;flex:1;min-height:0">
+                <input id="searchInput" class="search" type="search" placeholder="Search people by name…" aria-label="Search people">
+                <div id="chips" class="chips">
+                    <button data-f="all" aria-pressed="true">All</button>
+                    <button data-f="unread" aria-pressed="false">Unread</button>
+                    <button data-f="favs" aria-pressed="false">Favourites</button>
+                    <button data-f="groups" aria-pressed="false">Groups</button>
+                    <button data-f="archived" aria-pressed="false">Archived</button>
+                </div>
+                <ul id="chatList" class="list"></ul>
+            </div>
+
+            <div id="paneStatus" style="display:none;flex-direction:column;flex:1;min-height:0">
+                <ul id="statusList" class="list"></ul>
+            </div>
+
+            <button id="fab" class="fab" aria-label="New group" data-i="users"></button>
+        </aside>
+
+        <section class="chat">
+            <div id="emptyState" class="empty">
+                <div class="logo" data-i="logo"></div>
+                <h2>Mint Chat</h2>
+                <p>Select a chat or search for a person to start messaging.</p>
+            </div>
+
+            <div id="chatPane" class="pane" hidden>
+                <header class="bar">
+                    <button id="backBtn" class="icon back" data-i="back" aria-label="Back to chats"></button>
+                    <button id="peerHead" class="peerhead" aria-label="Chat info">
+          <div id="peerAvatar" class="avatar"></div>
+          <div class="peer"><strong id="peerName"></strong><small id="peerStatus"></small></div>
+        </button>
+                    <button id="callVoiceBtn" class="icon" data-i="phone" aria-label="Voice call"></button>
+                    <button id="callVideoBtn" class="icon" data-i="video" aria-label="Video call"></button>
+                    <button id="searchBtn" class="icon" data-i="search" aria-label="Search in chat"></button>
+                    <button id="chatMenuBtn" class="icon" data-i="more" aria-label="Chat options"></button>
+                </header>
+                <div id="searchBar" class="searchbar" hidden>
+                    <input id="msgSearch" type="search" placeholder="Search in this chat…" aria-label="Search messages">
+                    <button id="searchClose" class="icon" data-i="x" aria-label="Close search"></button>
+                </div>
+                <div id="pinBar" class="pinbar" hidden>
+                    <span data-i="pin"></span>
+                    <button id="pinText" type="button"></button>
+                    <button id="pinClose" class="icon" data-i="x" aria-label="Unpin"></button>
+                </div>
+
+                <ul id="messages" class="messages" aria-live="polite"></ul>
+
+                <div id="replyBar" class="replybar" hidden><span id="replyText"></span><button id="replyCancel" class="icon" data-i="x" aria-label="Cancel"></button></div>
+                <div id="uploadBar" class="uploadbar" hidden><progress id="uploadProg" max="100" value="0"></progress></div>
+                <div id="recBar" class="recbar" hidden>
+                    <button id="recCancel" class="icon danger" data-i="trash" aria-label="Cancel recording"></button>
+                    <span><span class="dot"></span> Recording… <b id="recTime">0:00</b></span>
+                    <button id="recSend" class="primary send" data-i="send" aria-label="Send voice note"></button>
+                </div>
+                <div id="emojiPanel" class="emojipanel" hidden>
+                    <nav><button id="tabEmoji" aria-selected="true">Emoji</button><button id="tabSticker" aria-selected="false">Stickers</button></nav>
+                    <div id="egrid" class="egrid"></div>
+                </div>
+                <form id="composer" class="composer">
+                    <button id="emojiBtn" class="icon" type="button" data-i="smile" aria-label="Emoji and stickers"></button>
+                    <button id="attachBtn" class="icon" type="button" data-i="clip" aria-label="Attach file"></button>
+                    <input id="fileInput" type="file" hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt">
+                    <input id="msgInput" autocomplete="off" maxlength="2000" placeholder="Type a message" aria-label="Message">
+                    <button id="micBtn" class="primary send" type="button" data-i="mic" aria-label="Record voice note"></button>
+                    <button id="sendBtn" class="primary send" type="submit" data-i="send" aria-label="Send" hidden></button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Profile -->
+    <dialog id="profileDlg">
+        <form id="profileForm" method="dialog">
+            <h2>My profile</h2>
+            <div id="profAvatar" class="avatar big"></div>
+            <label for="profPhoto">Profile picture<input id="profPhoto" type="file" accept="image/*"></label>
+            <label for="profName">Name<input id="profName" maxlength="40" required></label>
+            <label for="profBio">Bio<textarea id="profBio" maxlength="140" rows="2"></textarea></label>
+            <div class="row">
+                <button id="profLogout" type="button" class="ghost danger" data-i="out">&nbsp;Log out</button>
+                <button id="profCancel" type="button" class="ghost" data-close>Cancel</button>
+                <button class="primary" type="submit">Save</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- New group / add members -->
+    <dialog id="groupDlg">
+        <form id="groupForm" method="dialog">
+            <h2 id="groupTitle">New group</h2>
+            <div id="grpTop">
+                <label for="grpPhoto">Group photo (optional)<input id="grpPhoto" type="file" accept="image/*"></label>
+                <label for="grpName">Group name<input id="grpName" maxlength="40"></label>
+            </div>
+            <input id="grpSearch" class="search" style="margin:0;width:100%" type="search" placeholder="Search people to add…" aria-label="Search people">
+            <small id="grpCount" style="margin-top:.4rem">0 selected</small>
+            <ul id="grpList" class="list pick"></ul>
+            <div class="row"><button type="button" class="ghost" data-close>Cancel</button><button id="grpSubmit" class="primary" type="submit">Create</button></div>
+        </form>
+    </dialog>
+
+    <!-- Contact / group info -->
+    <dialog id="infoDlg">
+        <div id="infoBody" class="info"></div>
+        <input id="infoPhoto" type="file" accept="image/*" hidden>
+        <div class="row"><button type="button" class="ghost" data-close>Close</button></div>
+    </dialog>
+
+    <!-- Forward -->
+    <dialog id="fwdDlg">
+        <h2>Forward to…</h2>
+        <ul id="fwdList" class="list pick" style="max-height:340px"></ul>
+        <div class="row"><button type="button" class="ghost" data-close>Cancel</button></div>
+    </dialog>
+
+    <!-- Add status -->
+    <dialog id="statusDlg">
+        <form id="statusForm" method="dialog">
+            <h2>New status</h2>
+            <label for="stText">Text or caption<textarea id="stText" rows="4" maxlength="300" placeholder="What's on your mind?"></textarea></label>
+            <div id="stColors" class="colors" aria-label="Background colour"></div>
+            <label for="stPhoto">Photo (optional)<input id="stPhoto" type="file" accept="image/*"></label>
+            <small>Status disappears after 24 hours.</small>
+            <div class="row"><button type="button" class="ghost" data-close>Cancel</button><button id="stPost" class="primary" type="submit">Post</button></div>
+        </form>
+    </dialog>
+
+    <!-- Status viewer -->
+    <div id="statusView" class="sv" hidden>
+        <div class="sv-card">
+            <div id="svBars" class="sv-bars"></div>
+            <div class="sv-head">
+                <div id="svAvatar" class="avatar"></div>
+                <div><strong id="svName"></strong><small id="svTime"></small></div>
+                <button id="svClose" class="icon" data-i="x" aria-label="Close status"></button>
+            </div>
+            <div id="svBody" class="sv-body"></div>
+            <div id="svFoot" class="sv-foot"></div>
+        </div>
+    </div>
+
+    <!-- Voice / video call -->
+    <div id="callView" class="call" hidden>
+        <video id="callRemote" autoplay playsinline></video>
+        <video id="callLocal" autoplay playsinline muted></video>
+        <div class="call-info">
+            <div id="callAvatar" class="avatar big"></div>
+            <h2 id="callName"></h2>
+            <p id="callStatus"></p>
+        </div>
+        <div class="call-ctl">
+            <button id="callMic" class="round" data-i="mic" aria-label="Mute microphone"></button>
+            <button id="callCam" class="round" data-i="video" aria-label="Camera on/off"></button>
+            <button id="callAccept" class="round green" data-i="phone" aria-label="Accept"></button>
+            <button id="callEnd" class="round red" data-i="phone" aria-label="End call"></button>
+        </div>
+    </div>
+
+    <!-- Image / video viewer -->
+    <div id="lightbox" class="lightbox" hidden>
+        <button id="lbClose" class="icon" data-i="x" aria-label="Close"></button>
+        <div id="lbBody"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>

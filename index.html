@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mint Chat – Log in</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./icons8-chat-bot-96.png" type="image/x-icon">
+</head>
+
+<body data-page="auth">
+    <div id="configBanner" class="banner" hidden>Firebase is not configured. Fill in <code>firebaseConfig</code> and <code>CLOUDINARY</code> at the top of script.js.</div>
+    <button id="themeBtn" class="icon theme-float" data-i="moon" aria-label="Toggle dark mode"></button>
+
+    <main id="authView" class="auth" hidden>
+        <section class="card">
+            <div class="logo" data-i="logo"></div>
+            <h1>Mint Chat</h1>
+            <p class="tag">Fast, simple, real-time messaging</p>
+            <div id="already" hidden>
+                <p class="tag">You are already logged in as<br><b id="alreadyName"></b></p>
+                <button id="alreadyGo" class="primary" type="button">Continue to chat</button>
+                <button id="alreadyOut" class="link" type="button">Log out / use another account</button>
+            </div>
+            <div id="authBox">
+                <div class="tabs" role="tablist">
+                    <button id="tabLogin" role="tab" aria-selected="true">Log in</button>
+                    <button id="tabSignup" role="tab" aria-selected="false">Sign up</button>
+                </div>
+                <form id="authForm" novalidate>
+                    <label id="nameWrap" for="authName" hidden>Name<input id="authName" autocomplete="name" maxlength="40"></label>
+                    <label for="authEmail">Email<input id="authEmail" type="email" autocomplete="email" required></label>
+                    <label for="authPass">Password<input id="authPass" type="password" autocomplete="current-password" minlength="6" required></label>
+                    <button id="authSubmit" class="primary" type="submit">Log in</button>
+                    <button id="resetBtn" class="link" type="button">Forgot password?</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
